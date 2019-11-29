@@ -11,6 +11,7 @@ public class ImplementacaoProdutorConsumidor {
     //https://www.devmedia.com.br/trabalhando-com-threads-em-java/28780
     //https://brizeno.wordpress.com/2011/09/25/praticando-concorrencia-em-java-semaforos/
     //https://sites.google.com/site/jessicaso2011/codigo-produtor-consumidor-com-semaforos
+    //http://www.dsc.ufcg.edu.br/~jacques/cursos/map/html/threads/sincronizacao.html
 
     public static void main(String[] args) {
         GerenciaBuffer gerenciaBuffer = new GerenciaBuffer(1);
