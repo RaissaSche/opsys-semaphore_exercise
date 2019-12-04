@@ -1,22 +1,35 @@
 import java.util.ArrayList;
-
-// A thread consumidora recebe informações(um valor inteiro)da thread ​p0 no buffer ​b0
-// e da thread ​p1 no buffer ​b1​(primeiro consome de ​b0 e depois consome de ​b1​).
-// Os buffers ​b0 e​ b1 possuem capacidade de armazenar um único elemento.
-// A thread consumidora só pode consumir se existirem informações no buffer.
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Consumidor extends Thread {
-    private GerenciaBuffer gerenciaBuffer;
-    private int idThread;
-    private ArrayList<Integer> valoresConsumidos = new ArrayList();
+    private List<Produtor> produtores;
+    private List<Integer> valoresProduzidos;
 
-    public Consumidor(GerenciaBuffer gerenciaBuffer, int idThread) {
-        this.gerenciaBuffer = gerenciaBuffer;
-        this.idThread = idThread;
+    public Consumidor() {
+        valoresProduzidos = new ArrayList<Integer>();
     }
 
     public void run() {
-        valoresConsumidos.add(gerenciaBuffer.get(idThread));
-        System.out.print("Valores consumidos: " + valoresConsumidos + "/n");
+        try {
+            while (true) {
+                //garante a ordem de leitura: primeiro de p0 (bo) e depois de p1(b1)
+                for (Produtor p : this.produtores) {
+                    //Só para ficar mais legível os outputs
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                    p.getSemaforoConsumo().acquire();
+                    valoresProduzidos.add(p.getB());
+                    System.out.println("Consumiu do processo " + p.getIdProdutor());
+                    System.out.println(valoresProduzidos);
+                    p.getSemaforoProducao().release();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setProdutores(List<Produtor> produtores) {
+        this.produtores = produtores;
     }
 }
